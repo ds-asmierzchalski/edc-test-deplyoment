@@ -1,0 +1,14 @@
+---
+apiVersion: v2
+name: edc-test-deployment
+description: |
+  EDC setup with own vault.
+
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: tractusx-connector
+    alias: edc
+    repository: https://eclipse-tractusx.github.io/tractusx-edc
+    version: 0.9.0

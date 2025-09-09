@@ -1,0 +1,82 @@
+edc:
+  install:
+    postgresql: true
+    vault: true
+  participant:
+    id: BPNL00000003AZQP
+
+  postgresql:
+    nameOverride: edc-db
+    auth:
+      password: "dbpassworddataconsumeredc"
+      postgresPassword: "dbpassworddataconsumeredc"
+
+  vault:
+    nameOverride: edc-vault
+    enabled: true
+
+  iatp:
+    id: did:web:ssi-dim-wallet-stub.stable.catena-x.net:BPNL00000003AZQP
+    # -- Configures the trusted issuers for this runtime
+    trustedIssuers:
+      - did:web:ssi-dim-wallet-stub.stable.catena-x.net:BPNL00000003CRHK
+    sts:
+      dim:
+        url: http://ssi-dim-wallet-stub.stable.catena-x.net/api/sts
+      oauth:
+        token_url: http://ssi-dim-wallet-stub.stable.catena-x.net/oauth/token
+        client:
+          id: BPNL00000003AZQP
+          secret_alias: edc-wallet-secret
+  controlplane:
+    env:
+      TX_IAM_IATP_CREDENTIALSERVICE_URL: http://ssi-dim-wallet-stub.stable.catena-x.net/api
+      EDC_IAM_DID_WEB_USE_HTTPS: false
+    ingresses:
+      - enabled: true
+        hostname: "edc-controlplane.stable.catena-x.net"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - protocol
+          - management
+        tls:
+          enabled: true
+          secretName: tls-secret-edc-test-deployment-controlplane
+
+    bdrs:
+      cache_validity_seconds: 600
+      server:
+        url: https://ssi-dim-wallet-stub.stable.catena-x.net/api/v1/directory
+
+    endpoints:
+      management:
+        authKey: "test"
+
+  dataplane:
+    env:
+      TX_IAM_IATP_CREDENTIALSERVICE_URL: http://ssi-dim-wallet-stub.stable.catena-x.net/api
+      EDC_IAM_DID_WEB_USE_HTTPS: false
+    ingresses:
+      - enabled: true
+        hostname: "dataconsumer-1-dataplane.stable.catena-x.net"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - public
+        className: "nginx"
+        tls:
+          enabled: true
+          secretName: tls-secret-edc-test-deployment-dataplane
+
+    token:
+      signer:
+        privatekey_alias: tokenSignerPrivateKey
+      verifier:
+        publickey_alias: tokenSignerPublicKey
