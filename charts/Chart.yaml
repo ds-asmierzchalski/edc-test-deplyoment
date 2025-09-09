@@ -11,4 +11,4 @@ dependencies:
   - name: tractusx-connector
     alias: edc
     repository: https://eclipse-tractusx.github.io/tractusx-edc
-    version: 0.9.0
+    version: 0.10.0
