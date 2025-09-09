@@ -17,7 +17,6 @@ edc:
 
   iatp:
     id: did:web:ssi-dim-wallet-stub.stable.catena-x.net:BPNL00000003AZQP
-    # -- Configures the trusted issuers for this runtime
     trustedIssuers:
       - did:web:ssi-dim-wallet-stub.stable.catena-x.net:BPNL00000003CRHK
     sts:
@@ -62,7 +61,7 @@ edc:
       EDC_IAM_DID_WEB_USE_HTTPS: false
     ingresses:
       - enabled: true
-        hostname: "dataconsumer-1-dataplane.stable.catena-x.net"
+        hostname: "edc-dataplane.stable.catena-x.net"
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-prod"
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
